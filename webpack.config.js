@@ -93,7 +93,14 @@ module.exports = (env) => ({
 			? {
 					port: 3000,
 					clientLogLevel: 'info',
-					historyApiFallback: true
+					historyApiFallback: true,
+					proxy: {
+						'/api': {
+							target: 'https://musicline.de/api/autocomplete/search',
+							changeOrigin: true,
+							ignorePath: true
+						}
+					}
 				}
 			: undefined
 });

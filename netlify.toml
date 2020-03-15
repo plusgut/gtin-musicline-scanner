@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/api"
+  to = "https://musicline.de/api/autocomplete/search"
+  status = 200
