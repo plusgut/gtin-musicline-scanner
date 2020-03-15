@@ -1,5 +1,5 @@
 import plusnew, { component, store } from '@plusnew/core';
-import * as table from 'text-table';
+import Distributor, { item } from './components/Distributor';
 
 type apiResponse = {
 	searchResult: {
@@ -24,14 +24,6 @@ type apiItem = {
 	title: string;
 };
 
-type item = {
-	gtin: string;
-	amount: number;
-	artist: string;
-	title: string;
-	configuration: string;
-};
-
 type distributor = {
 	name: string;
 	items: item[];
@@ -50,13 +42,6 @@ type deleteItemAction = {
 };
 
 type actions = addItemAction | deleteItemAction;
-
-function convertItemsToText(items: item[]) {
-	return table([
-		[ 'Anzahl', 'EAN', 'Artist', 'Titel', 'Format' ],
-		...items.map((item) => [ `${item.amount}`, item.gtin, item.artist, item.title, item.configuration ])
-	]);
-}
 
 export default component('App', () => {
 	const search = store('');
@@ -199,49 +184,17 @@ export default component('App', () => {
 			<distributors.Observer>
 				{(distributorsState) =>
 					distributorsState.map((distributor) => (
-						<div key={distributor.name}>
-							<span>{distributor.name} - </span>
-							<a
-								download={`${distributor.name}-${new Date().toISOString()}.txt`}
-								href={`data:text/plain;charset=utf-8,${convertItemsToText(distributor.items)}`}
-							>
-								Download
-							</a>
-							<table>
-								<thead>
-									<td>Anzahl</td>
-									<td>Künstler</td>
-									<td>Titel</td>
-									<td>Format</td>
-									<td>EAN</td>
-									<td />
-								</thead>
-								<tbody>
-									{distributor.items.map((item) => (
-										<tr key={item.gtin}>
-											<td>{item.amount}</td>
-											<td>{item.artist}</td>
-											<td>{item.title}</td>
-											<td>{item.configuration}</td>
-											<td>{item.gtin}</td>
-											<td
-												onclick={() => {
-													distributors.dispatch({
-														type: 'DELETE_ITEM',
-														payload: {
-															gtin: item.gtin
-														}
-													});
-												}}
-											>
-												x
-											</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-							<br />
-						</div>
+						<Distributor
+							name={distributor.name}
+							items={distributor.items}
+							onDelete={(gtin) =>
+								distributors.dispatch({
+									type: 'DELETE_ITEM',
+									payload: {
+										gtin: gtin
+									}
+								})}
+						/>
 					))}
 			</distributors.Observer>
 		</div>
