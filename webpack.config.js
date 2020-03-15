@@ -76,7 +76,7 @@ module.exports = (env) => ({
 			cleanOnceBeforeBuildPatterns: [ path.join(__dirname, 'dist') ]
 		}),
 		new HtmlWebpackPlugin({
-			title: 'plusnew app',
+			title: 'gtin musicline scanner',
 			inject: 'head'
 		}),
 		new ScriptExtHtmlWebpackPlugin({
