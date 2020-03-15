@@ -1,5 +1,15 @@
 import plusnew, { component, store } from '@plusnew/core';
 
+type apiResponse = {
+	searchResult: {
+		fieldGroupItems: [];
+		filterGroupItems: [];
+		limit: number;
+		offset: number;
+		resultItems: apiItem[];
+	};
+};
+
 type apiItem = {
 	artist: string;
 	artwork: string;
@@ -36,6 +46,23 @@ type actions = addItemAction;
 export default component('App', () => {
 	const search = store('');
 	const distributors = store<distributor[], actions>([], (previousState, action) => {
+		if (action.type === 'ADD_ITEM') {
+			return [
+				...previousState,
+				{
+					name: action.payload.distributor_name,
+					items: [
+						{
+							gtin: action.payload.gtin,
+							amount: 1,
+							artist: action.payload.artist,
+							title: action.payload.title,
+							configuration: action.payload.configuration
+						}
+					]
+				}
+			];
+		}
 		throw new Error('No such action');
 	});
 
@@ -67,9 +94,14 @@ export default component('App', () => {
 									releaseDateTo: null,
 									releaseDateTerm: 'custom'
 								})
-							}).then(() => {
-								console.log('result');
-							});
+							})
+								.then((response) => response.json() as Promise<apiResponse>)
+								.then((result) => {
+									distributors.dispatch({
+										type: 'ADD_ITEM',
+										payload: result.searchResult.resultItems[0]
+									});
+								});
 						}}
 					>
 						<input
@@ -82,7 +114,23 @@ export default component('App', () => {
 				)}
 			</search.Observer>
 			<distributors.Observer>
-				{(distributorsState) => distributorsState.map((distributor) => <div>{distributor.name}</div>)}
+				{(distributorsState) =>
+					distributorsState.map((distributor) => (
+						<div key={distributor.name}>
+							{distributor.name}
+							<table>
+								{distributor.items.map((item) => (
+									<tr key={item.gtin}>
+										<td>{item.amount}</td>
+										<td>{item.artist}</td>
+										<td>{item.title}</td>
+										<td>{item.configuration}</td>
+										<td>{item.gtin}</td>
+									</tr>
+								))}
+							</table>
+						</div>
+					))}
 			</distributors.Observer>
 		</div>
 	);

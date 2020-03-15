@@ -96,7 +96,7 @@ module.exports = (env) => ({
 					historyApiFallback: true,
 					proxy: {
 						'/api': {
-							target: 'https://musicline.de/api/autocomplete/search',
+							target: 'https://musicline.de/api/search',
 							changeOrigin: true,
 							ignorePath: true
 						}
