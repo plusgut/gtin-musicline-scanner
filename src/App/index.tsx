@@ -181,10 +181,12 @@ export default component('App', () => {
 					</form>
 				)}
 			</search.Observer>
+
 			<distributors.Observer>
 				{(distributorsState) =>
 					distributorsState.map((distributor) => (
 						<Distributor
+							key={distributor.name}
 							name={distributor.name}
 							items={distributor.items}
 							onDelete={(gtin) =>
