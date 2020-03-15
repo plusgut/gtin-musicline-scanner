@@ -47,6 +47,44 @@ export default component('App', () => {
 	const search = store('');
 	const distributors = store<distributor[], actions>([], (previousState, action) => {
 		if (action.type === 'ADD_ITEM') {
+			const distributor = previousState.find(
+				(distributor) => distributor.name === action.payload.distributor_name
+			);
+			if (distributor) {
+				return previousState.map((distributor) => {
+					if (distributor.name === action.payload.distributor_name) {
+						const item = distributor.items.find((item) => item.gtin === action.payload.gtin);
+						if (item) {
+							return {
+								name: distributor.name,
+								items: distributor.items.map(
+									(item) =>
+										item.gtin === action.payload.gtin
+											? {
+													...item,
+													amount: item.amount + 1
+												}
+											: item
+								)
+							};
+						}
+						return {
+							name: distributor.name,
+							items: [
+								...distributor.items,
+								{
+									gtin: action.payload.gtin,
+									amount: 1,
+									artist: action.payload.artist,
+									title: action.payload.title,
+									configuration: action.payload.configuration
+								}
+							]
+						};
+					}
+					return distributor;
+				});
+			}
 			return [
 				...previousState,
 				{
