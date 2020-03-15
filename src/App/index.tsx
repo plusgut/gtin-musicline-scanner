@@ -52,8 +52,9 @@ type actions = addItemAction | deleteItemAction;
 
 function convertItemsToText(items: item[]) {
 	return items.reduce(
-		(acc, item) => `${acc}${item.amount},${item.gtin},${item.artist},${item.title},${item.configuration}\n`,
-		'Anzahl,EAN,Artist,Titel,Format\n'
+		(acc, item) =>
+			`${acc}${item.amount}\t\t${item.gtin}\t\t${item.artist}\t\t${item.title}\t\t${item.configuration}\n`,
+		'Anzahl\t\tEAN\t\tArtist\t\tTitel\t\tFormat\n'
 	);
 }
 
