@@ -50,22 +50,22 @@ export default component('App', () => {
 							fetch('/api', {
 								method: 'POST',
 								headers: {
-									Accept: 'application/json, text/javascript, */*; q=0.01',
+									Accept: 'application/json',
 									'Content-Type': 'application/json'
 								},
 								body: JSON.stringify({
 									searchTerm: searchState,
-									isAvailable: true
-									// orderBy: 'score'
-									// isReverseOrder: false,
-									// offset: 0,
-									// limit: 50,
-									// analyzeFilters: true,
-									// fieldTerms: [],
-									// filterTerms: [],
-									// releaseDateFrom: null,
-									// releaseDateTo: null,
-									// releaseDateTerm: 'custom'
+									isAvailable: true,
+									orderBy: 'score',
+									isReverseOrder: false,
+									offset: 0,
+									limit: 50,
+									analyzeFilters: true,
+									fieldTerms: [],
+									filterTerms: [],
+									releaseDateFrom: null,
+									releaseDateTo: null,
+									releaseDateTerm: 'custom'
 								})
 							}).then(() => {
 								console.log('result');
