@@ -41,7 +41,14 @@ type addItemAction = {
 	payload: apiItem;
 };
 
-type actions = addItemAction;
+type deleteItemAction = {
+	type: 'DELETE_ITEM';
+	payload: {
+		gtin: string;
+	};
+};
+
+type actions = addItemAction | deleteItemAction;
 
 export default component('App', () => {
 	const search = store('');
@@ -101,6 +108,34 @@ export default component('App', () => {
 				}
 			];
 		}
+
+		if (action.type === 'DELETE_ITEM') {
+			return previousState.map((distributor) => {
+				const item = distributor.items.find((item) => item.gtin === action.payload.gtin);
+
+				if (item) {
+					if (item.amount > 1) {
+						return {
+							name: distributor.name,
+							items: distributor.items.map(
+								(item) =>
+									item.gtin === action.payload.gtin
+										? {
+												...item,
+												amount: item.amount - 1
+											}
+										: item
+							)
+						};
+					}
+					return {
+						name: distributor.name,
+						items: distributor.items.filter((item) => item.gtin !== action.payload.gtin)
+					};
+				}
+				return distributor;
+			});
+		}
 		throw new Error('No such action');
 	});
 
@@ -157,15 +192,37 @@ export default component('App', () => {
 						<div key={distributor.name}>
 							{distributor.name}
 							<table>
-								{distributor.items.map((item) => (
-									<tr key={item.gtin}>
-										<td>{item.amount}</td>
-										<td>{item.artist}</td>
-										<td>{item.title}</td>
-										<td>{item.configuration}</td>
-										<td>{item.gtin}</td>
-									</tr>
-								))}
+								<thead>
+									<td>Anzahl</td>
+									<td>Künstler</td>
+									<td>Titel</td>
+									<td>Format</td>
+									<td>EAN</td>
+									<td />
+								</thead>
+								<tbody>
+									{distributor.items.map((item) => (
+										<tr key={item.gtin}>
+											<td>{item.amount}</td>
+											<td>{item.artist}</td>
+											<td>{item.title}</td>
+											<td>{item.configuration}</td>
+											<td>{item.gtin}</td>
+											<td
+												onclick={() => {
+													distributors.dispatch({
+														type: 'DELETE_ITEM',
+														payload: {
+															gtin: item.gtin
+														}
+													});
+												}}
+											>
+												x
+											</td>
+										</tr>
+									))}
+								</tbody>
 							</table>
 						</div>
 					))}
