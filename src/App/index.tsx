@@ -50,6 +50,13 @@ type deleteItemAction = {
 
 type actions = addItemAction | deleteItemAction;
 
+function convertItemsToText(items: item[]) {
+	return items.reduce(
+		(acc, item) => `${acc}${item.amount},${item.gtin},${item.artist},${item.title},${item.configuration}\n`,
+		'Anzahl,EAN,Artist,Titel,Format\n'
+	);
+}
+
 export default component('App', () => {
 	const search = store('');
 	const distributors = store<distributor[], actions>([], (previousState, action) => {
@@ -170,10 +177,12 @@ export default component('App', () => {
 							})
 								.then((response) => response.json() as Promise<apiResponse>)
 								.then((result) => {
-									distributors.dispatch({
-										type: 'ADD_ITEM',
-										payload: result.searchResult.resultItems[0]
-									});
+									if (result.searchResult.resultItems) {
+										distributors.dispatch({
+											type: 'ADD_ITEM',
+											payload: result.searchResult.resultItems[0]
+										});
+									}
 								});
 						}}
 					>
@@ -190,7 +199,13 @@ export default component('App', () => {
 				{(distributorsState) =>
 					distributorsState.map((distributor) => (
 						<div key={distributor.name}>
-							{distributor.name}
+							<span>{distributor.name} - </span>
+							<a
+								download={`${distributor.name}-${new Date().toISOString()}.txt`}
+								href={`data:text/plain;charset=utf-8,${convertItemsToText(distributor.items)}`}
+							>
+								Download
+							</a>
 							<table>
 								<thead>
 									<td>Anzahl</td>
@@ -224,6 +239,7 @@ export default component('App', () => {
 									))}
 								</tbody>
 							</table>
+							<br />
 						</div>
 					))}
 			</distributors.Observer>
