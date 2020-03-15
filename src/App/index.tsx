@@ -1,4 +1,5 @@
 import plusnew, { component, store } from '@plusnew/core';
+import * as table from 'text-table';
 
 type apiResponse = {
 	searchResult: {
@@ -51,11 +52,10 @@ type deleteItemAction = {
 type actions = addItemAction | deleteItemAction;
 
 function convertItemsToText(items: item[]) {
-	return items.reduce(
-		(acc, item) =>
-			`${acc}${item.amount}\t\t${item.gtin}\t\t${item.artist}\t\t${item.title}\t\t${item.configuration}\n`,
-		'Anzahl\t\tEAN\t\tArtist\t\tTitel\t\tFormat\n'
-	);
+	return table([
+		[ 'Anzahl', 'EAN', 'Artist', 'Titel', 'Format' ],
+		...items.map((item) => [ `${item.amount}`, item.gtin, item.artist, item.title, item.configuration ])
+	]);
 }
 
 export default component('App', () => {
