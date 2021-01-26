@@ -14,7 +14,7 @@
   ],
   "author": "",
   "dependencies": {
-    "@plusnew/core": "^1.0.0-beta.5",
+    "@plusnew/core": "^1.6.2",
     "@plusnew/driver-dom": "^1.0.0-beta.5",
     "text-table": "^0.2.0"
   },
