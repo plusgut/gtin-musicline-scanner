@@ -19,7 +19,7 @@
     "text-table": "^0.2.0"
   },
   "devDependencies": {
-    "@plusnew/enzyme-adapter": "^1.0.0-beta.2",
+    "@plusnew/enzyme-adapter": "^1.1.0",
     "@plusnew/simulate-dom-events": "^0.1.5",
     "@types/jasmine": "^3.6.3",
     "awesome-typescript-loader": "^5.2.1",
